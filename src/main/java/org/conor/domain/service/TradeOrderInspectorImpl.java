@@ -16,18 +16,19 @@ public class TradeOrderInspectorImpl implements TradeOrderInspector {
     private final TradeOrderInspectorConfig config;
     private final SideCheckStrategy sideCheckStrategy;
     private final TimeCheckStrategy timeCheckStrategy;
-    private final PriceCheckStrategy priceCapCheckStrategy;
+    private final PriceCheckStrategy priceCheckStrategy;
 
     public TradeOrderInspectorImpl(TradeOrderInspectorConfig config,
                                    SideCheckStrategy sideOppositeCheckStrategy,
                                    TimeCheckStrategy timeCapCheckStrategy,
-                                   PriceCheckStrategy priceCapCheckStrategy) {
+                                   PriceCheckStrategy priceCheckStrategy) {
         this.config = config;
         this.sideCheckStrategy = sideOppositeCheckStrategy;
         this.timeCheckStrategy = timeCapCheckStrategy;
-        this.priceCapCheckStrategy = priceCapCheckStrategy;
+        this.priceCheckStrategy = priceCheckStrategy;
     }
 
+    @Override
     public Map<Trade, List<Order>> suspiciousActivityDetector(List<Trade> trades, List<Order> orders) {
         Map<Trade, List<Order>> results = trades.stream().collect(
                 Collectors.toMap(
@@ -52,6 +53,6 @@ public class TradeOrderInspectorImpl implements TradeOrderInspector {
         //avoids doing multiple filter runs in the order stream
         return sideCheckStrategy.isOppositeSide(trade, order)
                 && timeCheckStrategy.isWithinTimeCapBeforeTrade(trade, order, config.getTimeCapInSeconds())
-                && priceCapCheckStrategy.isWithinPercentCapOfPrice(trade, order, config.getPriceThresholdPercentage());
+                && priceCheckStrategy.isWithinPercentCapOfPrice(trade, order, config.getPriceThresholdPercentage());
     }
 }
