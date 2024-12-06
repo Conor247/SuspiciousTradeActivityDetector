@@ -1,0 +1,29 @@
+plugins {
+    id 'java'
+    id ("info.solidsoft.pitest") version "1.15.0"
+}
+
+group = 'org.conor'
+version = '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    pitest 'org.pitest:pitest-junit5-plugin:1.1.0'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+pitest {
+    junit5PluginVersion = '1.2.0'
+    testPlugin = 'junit5'
+    targetClasses = ['org.conor.domain.service.*']
+    targetTests = ['org.conor.*Test']
+    outputFormats = ['HTML']
+}
